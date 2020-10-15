@@ -33,6 +33,7 @@ public class HLSVDPro {
     private double[] ampl;
     private double[] phas;
 
+    String batchfileName = "batchfile";
 
     public HLSVDPro(double[] realdata, double[] imagdata, int nsv_sought, float dwell_time, int m) {
         this.realdata = realdata;

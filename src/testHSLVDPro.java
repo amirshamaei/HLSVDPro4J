@@ -8,13 +8,15 @@ import java.util.List;
 
 public class testHSLVDPro {
     public static void main(String[] args) {
-        double[] data = new double[2048];
+        double[] datar = new double[2048];
+        double[] datai = new double[2048];
         int i = 0;
         List<List<String>> records = new ArrayList<List<String>>();
-        try (CSVReader csvReader = new CSVReader(new FileReader("data.csv"));) {
+        try (CSVReader csvReader = new CSVReader(new FileReader("data1.csv"));) {
             String[] values = null;
             while ((values = csvReader.readNext()) != null) {
-                data[i] = Double.parseDouble(values[0]);
+                datar[i] = Double.parseDouble(values[0]);
+                datai[i] = Double.parseDouble(values[1]);
                 i += 1;
             }
         } catch (FileNotFoundException e) {
@@ -24,7 +26,7 @@ public class testHSLVDPro {
         }
 
 
-        HLSVDPro hlsvdObj = new HLSVDPro(data, data, 10, 0.256f, 5);
+        HLSVDPro hlsvdObj = new HLSVDPro(datar, datai, 15, 2.5E-1f, 5);
         hlsvdObj.run();
 
 
