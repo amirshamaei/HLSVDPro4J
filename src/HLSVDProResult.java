@@ -8,12 +8,19 @@ public class HLSVDProResult {
 //            (ndarray, floats) the phases (in degrees)
 
     int nsv_found;
-    float[] singular_values;
-    float[] frequencies;
-    float[] damping_factors;
-    float[] amplitudes;
-    float[] phases;
+    double[] singular_values;
+    double[] frequencies;
+    double[] damping_factors;
+    double[] amplitudes;
+    double[] phases;
 
 
-
+    public HLSVDProResult(int nsv, double[] singvals, double[] freq, double[] damp, double[] ampl, double[] phas) {
+        nsv_found = nsv;
+        singular_values = singvals;
+        frequencies = freq;
+        damping_factors = damp;
+        amplitudes = ampl;
+        phases = phas;
+    }
 }

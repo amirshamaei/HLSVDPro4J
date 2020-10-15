@@ -110,7 +110,7 @@ public class HLSVDPro {
                 }
             
 
-        return new HLSVDProResult();
+        return new HLSVDProResult(nsv_found, singvals, freq, damp, ampl, phas);
     }
     class ShutDownHook extends Thread {
         public void run() {

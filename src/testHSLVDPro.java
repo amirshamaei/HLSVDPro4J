@@ -24,11 +24,24 @@ public class testHSLVDPro {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        int[] nsv_arr = new int[]{13,14,15,16};
+        ArrayList<HLSVDProResult> results = new ArrayList<>();
+        for (int j = 0; j < 4 ; j++) {
 
+            int finalJ = j;
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
 
-        HLSVDPro hlsvdObj = new HLSVDPro(datar, datai, 15, 2.5E-1f, 5);
-        hlsvdObj.run();
+                    HLSVDPro hlsvdObj = new HLSVDPro(datar, datai, nsv_arr[finalJ], 2.5E-1f, 5);
+                    results.add(hlsvdObj.run());
+                }
+            });
+            t.run();
 
+        }
+
+        System.out.println("finished");
 
     }
 }
