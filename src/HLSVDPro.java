@@ -26,6 +26,7 @@ public class HLSVDPro {
 
     static ClientSocket socket = null;
     static ShutDownHook sdh = null;
+    static Process process;
     private int nsv_found;
     private double[] singvals;
     private double[] freq;
@@ -44,7 +45,7 @@ public class HLSVDPro {
     }
 
     public HLSVDProResult run() {
-        try {
+
 //            ServerSocket server = new ServerSocket(8080);
 //            System.out.println("wait for connection on port 8080");
 //            boolean run = true;
@@ -60,42 +61,77 @@ public class HLSVDPro {
 //                out.println(Arrays.toString(data));
 //            }
 //            System.exit(0);
-            if (socket == null)
-                socket = new ClientSocket(port);
-            socket.write_str("writeData");
-            socket.write_doubleArray(realdata);
-            socket.write_doubleArray(imagdata);
-            socket.writeInt(nsv_sought);
-            socket.writeFloat(dwell_time);
-            socket.writeInt(m);
-            socket.write_str("run");
+            if (socket == null) {
+                try {
+                    socket = new ClientSocket(port); // try if cannot be connected e.i. if server is not running
+                } catch (IOException e) {
+                    try {
+                        // start the server
+                        String[] command = { "cmd", "/c", "start", batchfileName};
+                        process = Runtime.getRuntime().exec(command);
+                        socket = new ClientSocket(port);
+                    } catch (IOException e2) {
+                        socket = null;
+//                        tryAgain = false;
+                    }
+                }
+            }
+            if (socket != null) {
+                try {
+                    socket.write_str("writeData");
+                    socket.write_doubleArray(realdata);
+                    socket.write_doubleArray(imagdata);
+                    socket.writeInt(nsv_sought);
+                    socket.writeFloat(dwell_time);
+                    socket.writeInt(m);
+                    socket.write_str("run");
 
-            nsv_found = socket.readInt();
-//            nsv_found = nsv_sought;
-            singvals = socket.readDoubleArray(nsv_found);
-            freq = socket.readDoubleArray(nsv_found);
-            damp = socket.readDoubleArray(nsv_found);
-            ampl = socket.readDoubleArray(nsv_found);
-            phas = socket.readDoubleArray(nsv_found);
+                    nsv_found = socket.readInt();
+                    singvals = socket.readDoubleArray(nsv_found);
+                    freq = socket.readDoubleArray(nsv_found);
+                    damp = socket.readDoubleArray(nsv_found);
+                    ampl = socket.readDoubleArray(nsv_found);
+                    phas = socket.readDoubleArray(nsv_found);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    socket.closeConnection();
+                    socket = null;
+//                    if (!tryAgain)
+//                        tryAgain = true;
+                }
+            }
+            if (sdh == null)
+                try {
+                    sdh = new ShutDownHook();
+                    Runtime.getRuntime().addShutdownHook(sdh);
+                } catch (Exception ex) {
+                    System.out.println(ex);
+
+                }
             
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
         return new HLSVDProResult();
     }
     class ShutDownHook extends Thread {
-        // executed when the JVM is shutting down
         public void run() {
             try {
                 if (socket != null)
-                    socket.write_str("FINISHED");
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+                    try {
+                        socket.write_str("FINISHED");
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
 
-            if (socket != null)
-                socket.closeConnection();
+                if (socket != null)
+                    socket.closeConnection();
+
+                socket = null;
+                process.destroy();
+
+            } catch (Exception e) {
+                e.getMessage();
+            }
 
         }
     }
