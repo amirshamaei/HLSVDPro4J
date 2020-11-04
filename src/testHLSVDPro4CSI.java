@@ -32,7 +32,7 @@ public class testHLSVDPro4CSI {
 
                         HLSVDPro hlsvdObj = new HLSVDPro(finalDatar, finalDatai, 15, 2.5E-1f, 5);
                         HLSVDProResult hslvdResult = hlsvdObj.run();
-                        System.out.println(finalJ + Arrays.toString(hslvdResult.amplitudes));
+                        System.out.println(finalJ + Arrays.toString(hslvdResult.frequencies));
                         results.add(hslvdResult);
                     }
                 });
