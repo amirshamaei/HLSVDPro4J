@@ -22,7 +22,7 @@ public class testHLSVDPro4CSI {
 
 
             ArrayList<HLSVDProResult> results = new ArrayList<>();
-            for (int j = 0; j < 10 ; j++) {
+            for (int j = 0; j < 100 ; j++) {
                 double[] finalDatar = realTD[j];
                 double[] finalDatai = imagTD[j];
                 int finalJ = j;
